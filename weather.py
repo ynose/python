@@ -25,6 +25,7 @@ def do_json(s):
             print urllib.unquote(v[1]['temperature']['min']['celsius'].encode('utf8'))
             print urllib.unquote(v[1]['temperature']['max']['celsius'].encode('utf8'))
 
+
 if __name__ == '__main__':
     json_str = weather_api()
     do_json(json_str)
