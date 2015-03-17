@@ -4,7 +4,19 @@ import sys
 import urllib
 import json
 
+import threading
+import time
+import datetime
+
+
+def getWeather():
+    json_str = livedoor_weather_api()
+    livedoor_weather_json(json_str)
+    
+
 def livedoor_weather_api():
+    print " === start sub thread (livedoor_weather_api) === "
+    
     url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=120010'
 
     #print url + params
@@ -12,6 +24,8 @@ def livedoor_weather_api():
     return response.read()
     
 def livedoor_weather_json(s):
+    print " === start sub thread (livedoor_weather_json) === "
+
     item_list = json.loads(s)
     
     # 場所名
@@ -51,5 +65,16 @@ def livedoor_weather_json(s):
     print urllib.unquote(temperature_max + "/" + temperature_min) + "℃"
 
 if __name__ == '__main__':
-    json_str = livedoor_weather_api()
-    livedoor_weather_json(json_str)
+    th = threading.Thread(target=getWeather)
+    th.setDaemon(True)  # Trueでメインスレッドが終了したらサブスレッドも終了させる
+    th.start()    
+    
+    try:
+        print " === start main thread (main) === "
+        while True:
+            time.sleep(1)
+            print "main thread : " + str(datetime.datetime.today())
+        print " === end main thread (main) === "
+    except KeyboardInterrupt:
+        pass
+
