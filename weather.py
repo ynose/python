@@ -16,18 +16,39 @@ def livedoor_weather_json(s):
     
     # 場所名
     print urllib.unquote(item_list["title"].encode('utf8'))
-    # 今日[0]  明日は[1]  明後日は[2]
+    # 今日[0]
     forecasts_today = item_list["forecasts"][0]
-    print urllib.unquote(forecasts_today['dateLabel'].encode('utf8'))
-    print urllib.unquote(forecasts_today['date'].encode('utf8'))
+    print urllib.unquote(forecasts_today['dateLabel'].encode('utf8') + forecasts_today['date'].encode('utf8'))
     print urllib.unquote(forecasts_today['telop'].encode('utf8'))
-    # 最低気温
-    if forecasts_today['temperature']['min'] is not None:
-        print "最低気温" + urllib.unquote(forecasts_today['temperature']['min']['celsius'].encode('utf8')) + "℃"
-        
+    # 最高気温
+    temperature_max = "--"
     if forecasts_today['temperature']['max'] is not None:
-        print "最高気温" + urllib.unquote(forecasts_today['temperature']['max']['celsius'].encode('utf8')) + "℃"
+        temperature_max = urllib.unquote(forecasts_today['temperature']['max']['celsius'].encode('utf8'))
 
+    # 最低気温
+    temperature_min = "--"
+    if forecasts_today['temperature']['min'] is not None:
+        temperature_min = urllib.unquote(forecasts_today['temperature']['min']['celsius'].encode('utf8'))
+
+    print urllib.unquote(temperature_max + "/" + temperature_min) + "℃"
+
+    print ""
+        
+    # 明日[1]
+    forecasts_tomorrow = item_list["forecasts"][1]
+    print urllib.unquote(forecasts_tomorrow['dateLabel'].encode('utf8') + forecasts_tomorrow['date'].encode('utf8'))
+    print urllib.unquote(forecasts_tomorrow['telop'].encode('utf8'))
+    # 最高気温
+    temperature_max = "--"
+    if forecasts_tomorrow['temperature']['max'] is not None:
+        temperature_max = urllib.unquote(forecasts_tomorrow['temperature']['max']['celsius'].encode('utf8'))
+
+    # 最低気温
+    temperature_min = "--"
+    if forecasts_tomorrow['temperature']['min'] is not None:
+        temperature_min = urllib.unquote(forecasts_tomorrow['temperature']['min']['celsius'].encode('utf8'))
+        
+    print urllib.unquote(temperature_max + "/" + temperature_min) + "℃"
 
 if __name__ == '__main__':
     json_str = livedoor_weather_api()
