@@ -11,8 +11,24 @@ import datetime
 
 def getWeather():
     json_str = livedoor_weather_api()
+    stock_weather(json_str)
     livedoor_weather_json(json_str)
     
+def getStockWeather():
+    # 天気予報JSONをファイルから読み込む
+    try:
+        with open('/tmp/stock_weather.json', 'r') as f:
+            json_str = f.read()
+            livedoor_weather_json(json.loads(json_str))
+        f.closed
+    except Exception, e:
+         # ファイルが無いとここでエラーになる
+        print e
+    else:
+        pass
+    finally:
+        pass
+
 
 def livedoor_weather_api():
     print " === start sub thread (livedoor_weather_api) === "
@@ -23,6 +39,13 @@ def livedoor_weather_api():
     response = urllib.urlopen(url)
     return response.read()
     
+def stock_weather(s):
+    # 天気予報JSONをファイルに保存
+    with open('/tmp/stock_weather.json', 'w') as f:
+        print f
+        f.write(json.dumps(s))
+    f.closed
+
 def livedoor_weather_json(s):
     print " === start sub thread (livedoor_weather_json) === "
 
@@ -65,7 +88,8 @@ def livedoor_weather_json(s):
     print urllib.unquote(temperature_max + "/" + temperature_min) + "℃"
 
 if __name__ == '__main__':
-    th = threading.Thread(target=getWeather)
+    # th = threading.Thread(target=getWeather)
+    th = threading.Thread(target=getStockWeather)
     th.setDaemon(True)  # Trueでメインスレッドが終了したらサブスレッドも終了させる
     th.start()    
     
